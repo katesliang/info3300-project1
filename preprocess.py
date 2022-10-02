@@ -114,8 +114,8 @@ for key in data:
     else:
         for year in data["Year Produced"]:
             for age in data["Year Produced"][year]:
-                del data[key][year][age]["rt_count"]
-                del data[key][year][age]["imdb_count"]
+                del data[key][year][age]["rt_sum"]
+                del data[key][year][age]["imdb_sum"]
 
 # Writing to data.json          
 json_object = json.dumps(data, indent=4)
