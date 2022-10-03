@@ -6,6 +6,99 @@
         
     </style>
     <body>
-        
+        <div id="vis-container">
+            <svg id="vis1" height="400" width="800"></svg>
+        </div>
+        <script>
+            const svg = d3.select("#vis1");
+            const width = svg.attr("width");
+            const height = svg.attr("height");
+            const margin = {top: 10, right: 10, bottom: 50, left: 50};
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            let annotations = svg.append('g').attr('class', 'annotations');
+            let chartArea = svg.append("g").attr("id","points")
+                .attr("transform",`translate(${margin.left},${margin.top})`);
+            d3.json('data.json').then( (data) => {
+                // console.log(data)
+                const dateParser = d3.timeParse('%Y');
+                let ageGroups = []
+                Object.entries(data['Year Produced']).forEach( (d, i) => {
+                    Object.entries(d[1]).forEach( (d,i) => {
+                        
+                        d[1]['imdb_mean'] = d[1]['imdb_mean']*10
+
+                        if (!ageGroups.includes(d[0])) {
+                            ageGroups.push(d[0])
+                        }
+                    })
+                    
+                    
+                })
+                console.log(ageGroups)
+                console.log(data['Year Produced'])
+                d3.extent(Object.entries(data['Year Produced']), d => d[0] );
+                const yearExtent = d3.extent(Object.entries(data['Year Produced']), d => d[0] );
+                // // console.log(yearExtent)
+                const earlyYear = dateParser(yearExtent[0])
+                const lateYear = dateParser(yearExtent[1])
+                // console.log([earlyYear, lateYear])
+                const yearScale = d3.scaleTime().domain([lateYear, earlyYear]).range([chartWidth, 0]);
+                const ratingScale = d3.scaleLinear().domain([0,100]).range([chartHeight, 0]);
+                const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(ageGroups);
+                //axes
+                let leftAxis = d3.axisLeft(ratingScale);
+                annotations.append('g')
+                // .attr('class', 'y axis')
+                .attr('transform',`translate(${margin.left-10},${margin.top})`) 
+                .call(leftAxis);
+
+                let leftGrid = d3.axisLeft(ratingScale)
+                                .tickSize(-chartWidth-9)
+                                .tickFormat('');
+                annotations.append('g').attr('class', 'gridlines') 
+                    .attr('transform',`translate(${margin.left-10},${margin.top})`)
+                    .call(leftGrid);
+
+                //bottom
+                let bottomAxis = d3.axisBottom(yearScale)
+                let bottomGrid = d3.axisBottom(yearScale)
+                                .tickSize(-chartHeight-10)
+                                .tickFormat("");
+                annotations.append("g")
+                   .attr("class", "x axis")
+                   .attr("transform", `translate(${margin.left}, ${chartHeight + margin.top + 10})`)
+                   .call(bottomAxis);
+                annotations.append("g")
+                   .attr("class", "x gridlines")
+                   .attr("transform", `translate(${margin.left}, ${chartHeight + margin.top + 10})`)
+                   .call(bottomGrid);
+
+                let tomatoes = chartArea.selectAll('g.tomato').data( data['Year Produced'] )
+                        .join('g')
+                        .attr('class', 'tomato')
+                        // .style('stroke', d => colorScale(d[0]));
+                
+                Object.entries(data["Year Produced"]).forEach((da, i) => {
+                    Object.entries(data["Year Produced"][da[0]]).forEach((d2, j) => {
+                        chartArea.append('circle')
+                        .attr('r', 5)
+                        .attr('fill', colorScale(d2[0]))
+                        .attr('cx', yearScale(dateParser(da[0])))
+                        .attr('cy', ratingScale(d2[1]['rt_mean']));
+                    })
+                })
+                
+                
+
+
+                // yearScale
+                // ratingscale
+
+
+
+            })
+
+        </script>
     </body>
 </html>

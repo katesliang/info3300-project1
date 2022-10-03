@@ -89,10 +89,10 @@ def preprocess(file_name):
             if row["Age"] == "":
                 row["Age"] = "all"
 
-            if row["Year"] not in data["Year Produced"]:
-                data["Year Produced"][row["Year"]] = {}
-            if row["Age"] not in data["Year Produced"][row["Year"]]:
-                data["Year Produced"][row["Year"]][row["Age"]] = {
+            if int(row["Year"]) not in data["Year Produced"]:
+                data["Year Produced"][int(row["Year"])] = {}
+            if row["Age"] not in data["Year Produced"][int(row["Year"])]:
+                data["Year Produced"][int(row["Year"])][row["Age"]] = {
                         "rt_sum": 0,
                         "imdb_sum": 0,
                         "rt_count": 0, 
@@ -100,7 +100,7 @@ def preprocess(file_name):
                         "rt_mean": 0., 
                         "imdb_mean": 0.
                     }
-            convert_rating(row["Year"], row, row["Age"], False)
+            convert_rating(int(row["Year"]), row, row["Age"], False)
 
     
 preprocess(FILE_NAME)
