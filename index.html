@@ -3,11 +3,13 @@
         <script src="https://d3js.org/d3.v7.min.js"></script>
     </head>
     <style>
-        
+        .gridlines line {
+                stroke: #bbb;
+            }
     </style>
     <body>
         <div id="vis-container">
-            <svg id="vis1" height="800" width="1000"></svg>
+            <svg id="vis1" height="800" width="1000" style="margin:50px"></svg>
         </div>
         <script>
             const svg = d3.select("#vis1");
@@ -19,6 +21,21 @@
             let annotations = svg.append('g').attr('class', 'annotations');
             let chartArea = svg.append("g").attr("id","points")
                 .attr("transform",`translate(${margin.left},${margin.top})`);
+            svg.append("text")
+                // .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width/2)
+                .attr("y", height)
+                .text("Year");
+            svg.append("text")
+                // .attr("class", "y label")
+                .attr("text-anchor", "end")
+                // .attr("y", 6)
+                .attr("x", -300)
+                .attr("y", 12)
+                // .attr("dy", 0)
+                .attr("transform", "rotate(-90)")
+                .text("Rotten Tomato Ratings");
             d3.json('data.json').then( (data) => {
                 // console.log(data)
                 const dateParser = d3.timeParse('%Y');
@@ -46,6 +63,7 @@
                 const yearScale = d3.scaleTime().domain([lateYear, earlyYear]).range([chartWidth, 0]);
                 const ratingScale = d3.scaleLinear().domain([0,100]).range([chartHeight, 0]);
                 const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(ageGroups);
+                
                 //axes
                 let leftAxis = d3.axisLeft(ratingScale);
                 annotations.append('g')
@@ -90,10 +108,6 @@
                 })
                 
                 
-
-
-                // yearScale
-                // ratingscale
 
 
 
