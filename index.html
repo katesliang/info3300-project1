@@ -4,12 +4,20 @@
     </head>
     <style>
         .gridlines line {
-                stroke: #bbb;
-            }
+            stroke: #bbb;
+        }
+
+        .gridlines .domain {
+            stroke: none;
+        }
     </style>
     <body>
         <div id="vis-container">
             <svg id="vis1" height="800" width="1000" style="margin:50px"></svg>
+
+            <br/>
+
+            <svg id="vis2" height="800" width="1200" style="margin:50px"></svg>
         </div>
         <script>
             const svg = d3.select("#vis1");
@@ -113,6 +121,128 @@
 
             })
 
+
+            d3.json("data.json").then( (data) => {
+                console.log(data);
+                const svg = d3.select('#vis2');
+                const width = svg.attr('width');
+                const height = svg.attr('height');
+
+                const margins = {top: 10, right: 200, bottom: 50, left: 70};
+                const chartWidth = width - margins.left - margins.right;
+                const chartHeight = height - margins.top - margins.bottom;
+
+                let chartArea = svg.append("g")
+                                .attr("transform", `translate(${margins.left},${margins.top})`);
+                                
+                const xScale = d3.scaleBand()
+                                .domain(Object.keys(data['Streaming Platform']))
+                                .range([0, chartWidth])
+                                .paddingInner(0.1);
+                const yScale = d3.scaleLinear()
+                                .domain([0, 1])
+                                .range([chartHeight, 0]);
+                
+                let formatter = d3.format(".0%");
+                let leftAxis = d3.axisLeft(yScale).tickFormat(formatter);
+                svg.append('g')
+                    .style("font-size", "12px")
+                    .attr('transform', `translate(${margins.left-10},${margins.top})`)
+                    .call(leftAxis);
+
+                let leftGridLines = d3.axisLeft(yScale)
+                    .tickSize(-chartWidth-10)
+                    .tickFormat("");
+                svg.append('g')
+                    .attr('class', 'gridlines')
+                    .attr('transform', `translate(${margins.left-10},${margins.top})`)
+                    .call(leftGridLines);
+
+                let bottomAxis = d3.axisBottom(xScale);
+                svg.append('g')
+                    .style("font-size", "12px")
+                    .attr('transform', `translate(${margins.left},${margins.top+chartHeight})`)
+                    .call(bottomAxis);
+                
+                let bottomGridLines = d3.axisBottom(xScale)
+                    .tickSize(-chartHeight-10)
+                    .tickFormat("");
+                svg.append('g')
+                    .attr('class', 'gridlines')
+                    .attr('transform', `translate(${margins.left},${margins.top+chartHeight})`)
+                    .call(bottomGridLines);
+            
+                let bars = chartArea.selectAll('g.bar').data(Object.keys(data['Streaming Platform']))
+                    .join('g')
+                    .attr('class', 'bar')
+                    .attr('transform', d => `translate(${xScale(d)},0)`);
+
+                bars.append('rect')
+                    .attr('x', xScale.bandwidth()/24 + xScale.bandwidth()/2)
+                    .attr('y', d => yScale(data['Streaming Platform'][d]['rt_mean']/100))
+                    .attr('width', xScale.bandwidth()/3)
+                    .attr('height', d => chartHeight - yScale(data['Streaming Platform'][d]['rt_mean']/100))
+                    .attr('fill', '#1f77b4');
+
+                bars.append('rect')
+                    .attr('x', 3*xScale.bandwidth()/24)
+                    .attr('y', d => yScale(data['Streaming Platform'][d]['imdb_mean']/10))
+                    .attr('width', xScale.bandwidth()/3)
+                    .attr('height', d => chartHeight - yScale(data['Streaming Platform'][d]['imdb_mean']/10))
+                    .attr('fill', '#d62727');
+
+                bars.append('text')
+                    .attr('x', xScale.bandwidth()*3/4 - xScale.bandwidth()/24)
+                    .attr('y', d => yScale(data['Streaming Platform'][d]['rt_mean']/100))
+                    .attr('dy', '-0.5em')
+                    .attr('text-anchor', 'middle')
+                    .text(d => data['Streaming Platform'][d]['rt_mean'].toFixed(2));
+
+                bars.append('text')
+                    .attr('x', xScale.bandwidth()/4 + xScale.bandwidth()/24)
+                    .attr('y', d => yScale(data['Streaming Platform'][d]['imdb_mean']/10))
+                    .attr('dy', '-0.5em')
+                    .attr('text-anchor', 'middle')
+                    .text(d => data['Streaming Platform'][d]['imdb_mean'].toFixed(2));
+
+                svg.append('text')
+                    .attr('x', margins.left + chartWidth/2)
+                    .attr('y', margins.top + chartHeight + 40)
+                    .attr('text-anchor', 'middle')
+                    .text('Streaming Platform');
+
+                svg.append('text')
+                    .attr('x', -400)
+                    .attr('y', 20)
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', 'rotate(-90)')
+                    .text('Average Rating');
+
+                svg.append("rect")
+                    .attr("x", width - 180)
+                    .attr("y", 15)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", "#d62727");
+                svg.append("rect")
+                    .attr("x", width - 180)
+                    .attr("y", 55)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", "#1f77b4");
+                svg.append("text")
+                    .attr("x", width - 150)
+                    .attr("y", 30)
+                    .text("Rotten Tomatoes Mean")
+                    .style("font-size", "15px");
+                svg.append("text")
+                    .attr("x", width - 150)
+                    .attr("y", 70)
+                    .text("IMDb Mean")
+                    .style("font-size", "15px");
+
+                chartArea.raise();
+            });
         </script>
     </body>
 </html>
