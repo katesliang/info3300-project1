@@ -12,18 +12,21 @@
         }
     </style>
     <body>
+        <h3>
+            Shungo Najima (sn685), Gordon Tran (gt294), Kate Liang (ksl67)
+        </h3>
         <div id="vis-container">
-            <svg id="vis1" height="800" width="1000" style="margin:50px"></svg>
+            <svg id="vis1" height="800" width="1200" style="margin:50px"></svg>
 
             <br/>
 
-            <svg id="vis2" height="800" width="1200" style="margin:50px"></svg>
+            <svg id="vis2" height="800" width="1400" style="margin:50px"></svg>
         </div>
         <script>
             const svg = d3.select("#vis1");
             const width = svg.attr("width");
             const height = svg.attr("height");
-            const margin = {top: 10, right: 10, bottom: 50, left: 50};
+            const margin = {top: 50, right: 200, bottom: 50, left: 50};
             const chartWidth = width - margin.left - margin.right;
             const chartHeight = height - margin.top - margin.bottom;
             let annotations = svg.append('g').attr('class', 'annotations');
@@ -44,6 +47,12 @@
                 // .attr("dy", 0)
                 .attr("transform", "rotate(-90)")
                 .text("Rotten Tomato Ratings");
+            svg.append('text')
+                .attr('x', chartWidth/2)
+                .attr('y', margin.top/2)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '20px')
+                .text('Rotten Tomato Ratings of Movies Released by Year');
             d3.json('data.json').then( (data) => {
                 // console.log(data)
                 const dateParser = d3.timeParse('%Y');
@@ -73,57 +82,57 @@
                 const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(ageGroups);
                 
                 svg.append("text")
-                    .attr("x", 150)
-                    .attr("y", 70)
-                    .text("all:")
+                    .attr("x", width - 150)
+                    .attr("y", 30)
+                    .text("all")
                     .style("font-size", "15px");
                 svg.append("rect")
-                    .attr("x", 180)
-                    .attr("y", 55)
+                    .attr("x", width - 180)
+                    .attr("y", 15)
                     .attr("width", 20)
                     .attr("height", 20)
                     .style("fill", d3.schemeCategory10[0]);
                 svg.append("text")
-                    .attr("x", 150)
-                    .attr("y", 100)
-                    .text("7+:")
+                    .attr("x", width - 150)
+                    .attr("y", 60)
+                    .text("7+")
                     .style("font-size", "15px");
                 svg.append("rect")
-                    .attr("x", 180)
-                    .attr("y", 85)
+                    .attr("x", width - 180)
+                    .attr("y", 45)
                     .attr("width", 20)
                     .attr("height", 20)
                     .style("fill", d3.schemeCategory10[1]);
                 svg.append("text")
-                    .attr("x", 150)
-                    .attr("y", 130)
-                    .text("13+:")
+                    .attr("x", width - 150)
+                    .attr("y", 90)
+                    .text("13+")
                     .style("font-size", "15px");
                 svg.append("rect")
-                    .attr("x", 180)
-                    .attr("y", 115)
+                    .attr("x", width - 180)
+                    .attr("y", 75)
                     .attr("width", 20)
                     .attr("height", 20)
                     .style("fill", d3.schemeCategory10[4]);
                 svg.append("text")
-                    .attr("x", 150)
-                    .attr("y", 160)
-                    .text("16+:")
+                    .attr("x", width - 150)
+                    .attr("y", 120)
+                    .text("16+")
                     .style("font-size", "15px");
                 svg.append("rect")
-                    .attr("x", 180)
-                    .attr("y", 145)
+                    .attr("x", width - 180)
+                    .attr("y", 105)
                     .attr("width", 20)
                     .attr("height", 20)
                     .style("fill", d3.schemeCategory10[2]);
                 svg.append("text")
-                    .attr("x", 150)
-                    .attr("y", 190)
-                    .text("18+:")
+                    .attr("x", width - 150)
+                    .attr("y", 150)
+                    .text("18+")
                     .style("font-size", "15px");
                 svg.append("rect")
-                    .attr("x", 180)
-                    .attr("y", 175)
+                    .attr("x", width - 180)
+                    .attr("y", 135)
                     .attr("width", 20)
                     .attr("height", 20)
                     .style("fill", d3.schemeCategory10[3]);
@@ -184,7 +193,7 @@
                 const width = svg.attr('width');
                 const height = svg.attr('height');
 
-                const margins = {top: 10, right: 200, bottom: 50, left: 70};
+                const margins = {top: 50, right: 400, bottom: 50, left: 70};
                 const chartWidth = width - margins.left - margins.right;
                 const chartHeight = height - margins.top - margins.bottom;
 
@@ -238,14 +247,14 @@
                     .attr('y', d => yScale(data['Streaming Platform'][d]['rt_mean']/100))
                     .attr('width', xScale.bandwidth()/3)
                     .attr('height', d => chartHeight - yScale(data['Streaming Platform'][d]['rt_mean']/100))
-                    .attr('fill', '#1f77b4');
+                    .attr('fill', '#d62727');
 
                 bars.append('rect')
                     .attr('x', 3*xScale.bandwidth()/24)
                     .attr('y', d => yScale(data['Streaming Platform'][d]['imdb_mean']/10))
                     .attr('width', xScale.bandwidth()/3)
                     .attr('height', d => chartHeight - yScale(data['Streaming Platform'][d]['imdb_mean']/10))
-                    .attr('fill', '#d62727');
+                    .attr('fill', '#1f77b4');
 
                 bars.append('text')
                     .attr('x', xScale.bandwidth()*3/4 - xScale.bandwidth()/24)
@@ -262,6 +271,13 @@
                     .text(d => data['Streaming Platform'][d]['imdb_mean'].toFixed(2));
 
                 svg.append('text')
+                    .attr('x', (width - margins.right - margins.left)/2)
+                    .attr('y', margins.top/2)
+                    .attr('text-anchor', 'middle')
+                    .attr('font-size', '20px')
+                    .text('Average Ratings by Streaming Platform');
+
+                svg.append('text')
                     .attr('x', margins.left + chartWidth/2)
                     .attr('y', margins.top + chartHeight + 40)
                     .attr('text-anchor', 'middle')
@@ -275,26 +291,26 @@
                     .text('Average Rating');
 
                 svg.append("rect")
-                    .attr("x", width - 180)
+                    .attr("x", width - 380)
                     .attr("y", 15)
                     .attr("width", 20)
                     .attr("height", 20)
-                    .style("fill", "#d62727");
+                    .style("fill", "#1f77b4");
                 svg.append("rect")
-                    .attr("x", width - 180)
+                    .attr("x", width - 380)
                     .attr("y", 55)
                     .attr("width", 20)
                     .attr("height", 20)
-                    .style("fill", "#1f77b4");
+                    .style("fill", "#d62727");
                 svg.append("text")
-                    .attr("x", width - 150)
+                    .attr("x", width - 350)
                     .attr("y", 30)
-                    .text("Rotten Tomatoes Mean")
+                    .text("IMDb Mean (out of 10)")
                     .style("font-size", "15px");
                 svg.append("text")
-                    .attr("x", width - 150)
+                    .attr("x", width - 350)
                     .attr("y", 70)
-                    .text("IMDb Mean")
+                    .text("Rotten Tomatoes Mean (out of 100)")
                     .style("font-size", "15px");
 
                 chartArea.raise();
