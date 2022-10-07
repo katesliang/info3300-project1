@@ -72,6 +72,62 @@
                 const ratingScale = d3.scaleLinear().domain([0,100]).range([chartHeight, 0]);
                 const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(ageGroups);
                 
+                svg.append("text")
+                    .attr("x", 150)
+                    .attr("y", 70)
+                    .text("all:")
+                    .style("font-size", "15px");
+                svg.append("rect")
+                    .attr("x", 180)
+                    .attr("y", 55)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", d3.schemeCategory10[0]);
+                svg.append("text")
+                    .attr("x", 150)
+                    .attr("y", 100)
+                    .text("7+:")
+                    .style("font-size", "15px");
+                svg.append("rect")
+                    .attr("x", 180)
+                    .attr("y", 85)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", d3.schemeCategory10[1]);
+                svg.append("text")
+                    .attr("x", 150)
+                    .attr("y", 130)
+                    .text("13+:")
+                    .style("font-size", "15px");
+                svg.append("rect")
+                    .attr("x", 180)
+                    .attr("y", 115)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", d3.schemeCategory10[4]);
+                svg.append("text")
+                    .attr("x", 150)
+                    .attr("y", 160)
+                    .text("16+:")
+                    .style("font-size", "15px");
+                svg.append("rect")
+                    .attr("x", 180)
+                    .attr("y", 145)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", d3.schemeCategory10[2]);
+                svg.append("text")
+                    .attr("x", 150)
+                    .attr("y", 190)
+                    .text("18+:")
+                    .style("font-size", "15px");
+                svg.append("rect")
+                    .attr("x", 180)
+                    .attr("y", 175)
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .style("fill", d3.schemeCategory10[3]);
+                    
                 //axes
                 let leftAxis = d3.axisLeft(ratingScale);
                 annotations.append('g')
